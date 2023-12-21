@@ -1,6 +1,7 @@
 package com.ouatson.backtontine.Tontine;
-
 import com.ouatson.backtontine.Participants.Participant;
+import com.ouatson.backtontine.Participants.ParticipantService;
+import com.ouatson.backtontine.admin.Admin;
 import com.ouatson.backtontine.Utilisateurs.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class TontineService {
     @Autowired
     private TontineRepository tontineRepository;
 
+    @Autowired
+    ParticipantService participantService;
+
     public List<Tontine> toutesMesTontines(User user){
         List<Tontine> all = tontineRepository.findAll();
         List<Tontine> mine = new ArrayList<>();
@@ -24,6 +28,21 @@ public class TontineService {
             Collection<Participant> participants = one.getParticipant();
             participants.forEach(participant -> {
                 if (user.getEmail().equals(participant.getEmail())){
+                    mine.add(one);
+                }
+            });
+        });
+        return mine;
+    }
+
+
+    public List<Tontine> toutesMesTontinesAdmin(Admin admin){
+        List<Tontine> all = tontineRepository.findAll();
+        List<Tontine> mine = new ArrayList<>();
+        all.forEach(one ->{
+            Collection<Participant> participants = one.getParticipant();
+            participants.forEach(participant -> {
+                if (admin.getEmail().equals(participant.getEmail())){
                     mine.add(one);
                 }
             });
@@ -52,5 +71,43 @@ public class TontineService {
     @Transactional
     public void supprimerTontine(Long id){
         tontineRepository.deleteById(id);
+    }
+
+
+
+
+    @Transactional
+    public void accepterUtilisateur(Long tontineId, User user) {
+        Tontine tontine = rechercheTontine(tontineId);
+        if (tontine != null) {
+            // Vérifier si l'utilisateur n'est pas déjà participant
+            boolean isUserParticipant = tontine.getParticipant().stream()
+                    .anyMatch(participant -> user.getEmail().equals(participant.getEmail()));
+
+            if (!isUserParticipant) {
+                // Ajouter l'utilisateur comme participant à la tontine
+                Participant participant = new Participant();
+                participant.setEmail(user.getEmail());
+                participant.setTontine(tontine);
+                participantService.enregistrerPart(participant);
+            }
+
+        } else {
+            throw new TontineNotFoundException("Tontine d'identifiant " + tontineId + " non trouvée !");
+        }
+    }
+
+    @Transactional
+    public void refuserUtilisateur(Long tontineId, User user) {
+        Tontine tontine = rechercheTontine(tontineId);
+
+        if (tontine != null) {
+            // Retirer l'utilisateur comme participant de la tontine s'il existe
+            tontine.getParticipant().removeIf(participant -> user.getEmail().equals(participant.getEmail()));
+
+            // Ajouter d'autres logiques nécessaires pour refuser l'utilisateur
+        } else {
+            throw new TontineNotFoundException("Tontine d'identifiant " + tontineId + " non trouvée !");
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.ouatson.backtontine.Utilisateurs;
 
-import com.ouatson.backtontine.SendEmail.EmailSenderService;
+//import com.ouatson.backtontine.SendEmail.EmailSenderService;
 import com.ouatson.backtontine.Tontine.Tontine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +18,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
+/*
     @Autowired
     private EmailSenderService emailSenderService;
-
+*/
     @PostMapping("/enregistrer")
     public ResponseEntity<User> userRegister(@RequestBody User user) throws Exception{
         User nouvelUtilisateur = userService.enregisterUser(user);
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     //    Partie pour l'oubli du mot de passe
-    @PostMapping("/oubli-password")
+/*    @PostMapping("/oubli-password")
     public void oubliPassword(@RequestBody String email) throws Exception {
         User existingUser = userService.rechercheUserByEmail(email);
         if (existingUser != null) {
@@ -56,7 +56,7 @@ public class UserController {
             throw new Exception("Aucun compte avec cet email");
         }
     }
-
+*/
     @GetMapping("/confirm-reset")
     public RedirectView confirmation(@RequestParam("token") String token) throws Exception {
         User user = userService.rechercheUserByToken(token);
