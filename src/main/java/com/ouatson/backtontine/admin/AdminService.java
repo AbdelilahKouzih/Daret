@@ -1,9 +1,8 @@
 package com.ouatson.backtontine.admin;
 
+import com.ouatson.backtontine.Demandes.Demandes;
 import com.ouatson.backtontine.Tontine.Tontine;
 import com.ouatson.backtontine.Tontine.TontineService;
-import com.ouatson.backtontine.admin.Admin;
-import com.ouatson.backtontine.Utilisateurs.AdminNotFoundException;
 import com.ouatson.backtontine.Utilisateurs.User;
 import com.ouatson.backtontine.Utilisateurs.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,27 +128,27 @@ public class AdminService {
 
 
     @Transactional
-    public void accepterUtilisateur(Long tontineId, Long userId) {
-        User user = rechercheUserById(userId);
+    public void accepterDemande(Demandes demande) {
+        User user = rechercheUserByEmail(demande.getEmail());
 
         if (user != null) {
             // Ajouter l'utilisateur à la tontine
-            tontineService.accepterUtilisateur(tontineId, user);
+            tontineService.accepterDemande(demande);
 
         } else {
-            throw new AdminNotFoundException("L'utilisateur d'identifiant " + userId + " non trouvé !");
+            throw new AdminNotFoundException("L'utilisateur d'identifiant " + demande.getEmail() + " non trouvé !");
         }
     }
 
     @Transactional
-    public void refuserUtilisateur(Long tontineId, Long userId) {
-        User user = rechercheUserById(userId);
+    public void refuserDemande(Demandes demande) {
+        User user = rechercheUserByEmail(demande.getEmail());
 
         if (user != null) {
             // Refuser l'utilisateur de la tontine
-            tontineService.refuserUtilisateur(tontineId, user);
+            tontineService.refuserDemande(demande);
         } else {
-            throw new AdminNotFoundException("L'utilisateur d'identifiant " + userId + " non trouvé !");
+            throw new AdminNotFoundException("L'utilisateur d'identifiant " + demande.getEmail() + " non trouvé !");
         }
     }
 

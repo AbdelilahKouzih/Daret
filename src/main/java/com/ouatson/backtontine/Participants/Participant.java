@@ -3,6 +3,7 @@ package com.ouatson.backtontine.Participants;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.ouatson.backtontine.Participation.Participation;
 import com.ouatson.backtontine.Tontine.Tontine;
 import com.ouatson.backtontine.Versement.Versement;
 
@@ -46,6 +47,18 @@ public class Participant implements Serializable {
     @OneToMany(mappedBy = "participant")
     private List<Versement> versements;
 
+
+    @ManyToMany(mappedBy = "participants")
+    private List<Participation> participations;
+
+
+    public List<Participation> getParticipations() {
+        return participations;
+    }
+
+    public void setParticipations(List<Participation> participations) {
+        this.participations = participations;
+    }
     public Participant() {
     }
 

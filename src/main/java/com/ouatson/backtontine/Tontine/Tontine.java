@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ouatson.backtontine.Demandes.Demandes;
 import com.ouatson.backtontine.Participants.Participant;
+import com.ouatson.backtontine.Participation.Participation;
 import com.ouatson.backtontine.Tontine.HistoriqueTirage.Tirages;
 import com.ouatson.backtontine.Utilisateurs.User;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -45,13 +47,23 @@ public class Tontine implements Serializable {
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
     private User proprietaire;
-    @OneToMany(mappedBy = "tontine")
-    private Collection<Participant> participant;
+   // @OneToMany(mappedBy = "tontine")
+   // private Collection<Participant> participant;
     @OneToMany(mappedBy = "tontine")
     private Collection<Demandes> demandes;
     @OneToMany(mappedBy = "tontine")
     private Collection<Tirages> tirages;
 
+    @OneToMany(mappedBy = "tontine")
+    private List<Participation> participations;
+
+    public List<Participation> getParticipations() {
+        return participations;
+    }
+
+    public void setParticipations(List<Participation> participations) {
+        this.participations = participations;
+    }
 
     public Tontine() {
     }
@@ -178,13 +190,13 @@ public class Tontine implements Serializable {
         this.proprietaire = proprietaire;
     }
 
-    public Collection<Participant> getParticipant() {
+   /* public Collection<Participant> getParticipant() {
         return participant;
     }
 
     public void setParticipant(Collection<Participant> participant) {
         this.participant = participant;
-    }
+    }*/
 
     public Collection<Demandes> getDemandes() { return demandes; }
 
@@ -209,7 +221,7 @@ public class Tontine implements Serializable {
                 ", typeTirage=" + typeTirage +
                 ", description='" + description + '\'' +
                 ", proprietaire=" + proprietaire +
-                ", participant=" + participant +
+              //  ", participant=" + participant +
                 ", demandes=" + demandes +
                 ", tirages=" + tirages +
                 '}';

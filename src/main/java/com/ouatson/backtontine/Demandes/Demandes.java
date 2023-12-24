@@ -1,10 +1,12 @@
 package com.ouatson.backtontine.Demandes;
 
 import com.ouatson.backtontine.Tontine.Tontine;
+import com.ouatson.backtontine.Utilisateurs.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Demandes implements Serializable {
@@ -12,6 +14,7 @@ public class Demandes implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private Long id;
+
     private String email;
     private String nom_complet;
     private String probleme;
@@ -20,13 +23,22 @@ public class Demandes implements Serializable {
     private Boolean acceptation;
     private Date dateDemande;
     private Date dateAction;
+
     @ManyToOne
     private Tontine tontine;
+
+    @ManyToMany
+    @JoinTable(
+            name = "demandes_utilisateurs",
+            joinColumns = @JoinColumn(name = "demande_id"),
+            inverseJoinColumns = @JoinColumn(name = "utilisateur_id")
+    )
+    private List<User> utilisateurs;
 
     public Demandes() {
     }
 
-    public Demandes(Long id, String email, String nom_complet, String probleme, String telprobleme, Boolean action, Boolean acceptation, Date dateDemande, Date dateAction, Tontine tontine) {
+    public Demandes(Long id, String email, String nom_complet, String probleme, String telprobleme, Boolean action, Boolean acceptation, Date dateDemande, Date dateAction, Tontine tontine, List<User> utilisateurs) {
         this.id = id;
         this.email = email;
         this.nom_complet = nom_complet;
@@ -37,14 +49,7 @@ public class Demandes implements Serializable {
         this.dateDemande = dateDemande;
         this.dateAction = dateAction;
         this.tontine = tontine;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.utilisateurs = utilisateurs;
     }
 
     public String getEmail() {
@@ -79,6 +84,38 @@ public class Demandes implements Serializable {
         this.telprobleme = telprobleme;
     }
 
+    public Boolean getAction() {
+        return action;
+    }
+
+    public void setAction(Boolean action) {
+        this.action = action;
+    }
+
+    public Boolean getAcceptation() {
+        return acceptation;
+    }
+
+    public void setAcceptation(Boolean acceptation) {
+        this.acceptation = acceptation;
+    }
+
+    public Date getDateDemande() {
+        return dateDemande;
+    }
+
+    public void setDateDemande(Date dateDemande) {
+        this.dateDemande = dateDemande;
+    }
+
+    public Date getDateAction() {
+        return dateAction;
+    }
+
+    public void setDateAction(Date dateAction) {
+        this.dateAction = dateAction;
+    }
+
     public Tontine getTontine() {
         return tontine;
     }
@@ -87,35 +124,11 @@ public class Demandes implements Serializable {
         this.tontine = tontine;
     }
 
-    public Boolean getAction() { return action; }
+    public List<User> getUtilisateurs() {
+        return utilisateurs;
+    }
 
-    public void setAction(Boolean action) { this.action = action; }
-
-    public Boolean getAcceptation() { return acceptation; }
-
-    public void setAcceptation(Boolean acceptation) { this.acceptation = acceptation; }
-
-    public Date getDateDemande() { return dateDemande; }
-
-    public void setDateDemande(Date dateDemande) { this.dateDemande = dateDemande; }
-
-    public Date getDateAction() { return dateAction; }
-
-    public void setDateAction(Date dateAction) { this.dateAction = dateAction; }
-
-    @Override
-    public String toString() {
-        return "Demandes{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", nom_complet='" + nom_complet + '\'' +
-                ", probleme='" + probleme + '\'' +
-                ", telprobleme='" + telprobleme + '\'' +
-                ", action=" + action +
-                ", acceptation=" + acceptation +
-                ", dateDemande=" + dateDemande +
-                ", dateAction=" + dateAction +
-                ", tontine=" + tontine +
-                '}';
+    public void setUtilisateurs(List<User> utilisateurs) {
+        this.utilisateurs = utilisateurs;
     }
 }
