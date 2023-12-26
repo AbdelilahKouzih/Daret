@@ -48,17 +48,6 @@ public class Participant implements Serializable {
     private List<Versement> versements;
 
 
-    @ManyToMany(mappedBy = "participants")
-    private List<Participation> participations;
-
-
-    public List<Participation> getParticipations() {
-        return participations;
-    }
-
-    public void setParticipations(List<Participation> participations) {
-        this.participations = participations;
-    }
     public Participant() {
     }
 

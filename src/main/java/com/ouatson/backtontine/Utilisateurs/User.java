@@ -2,6 +2,9 @@ package com.ouatson.backtontine.Utilisateurs;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.ouatson.backtontine.Demandes.Demandes;
+import com.ouatson.backtontine.Participants.Participant;
+import com.ouatson.backtontine.Participation.Participation;
 import com.ouatson.backtontine.Problemes.Impayes.Impayes;
 import com.ouatson.backtontine.Problemes.Signals.Signals;
 import com.ouatson.backtontine.Problemes.Vols.Vols;
@@ -11,6 +14,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -45,6 +49,23 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "proprio")
     private Collection<Impayes> impayes;
 
+    @ManyToMany(mappedBy = "utilisateurs")
+    private List<Demandes> demandes;
+
+
+
+    @ManyToMany(mappedBy = "utilisateurs")
+    private List<Participation> participations;
+
+
+    public List<Participation> getParticipations() {
+        return participations;
+    }
+
+    public void setParticipations(List<Participation> participations) {
+        this.participations = participations;
+    }
+
     public User() {
     }
 
@@ -58,7 +79,8 @@ public class User implements Serializable {
                 String profession,
                 String password,
                 Sexe sexe,
-                String confirmationToken) {
+                String confirmationToken,
+                List<Demandes> demandes) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
@@ -70,6 +92,7 @@ public class User implements Serializable {
         this.password = password;
         this.sexe = sexe;
         this.confirmationToken = confirmationToken;
+        this.demandes = demandes;
     }
 
     public Long getId() {
@@ -144,7 +167,7 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Sexe getSexe() {
+    public Participant.Sexe getSexe() {
         return sexe;
     }
 
@@ -178,6 +201,15 @@ public class User implements Serializable {
 
     public void setImpayes(Collection<Impayes> impayes) { this.impayes = impayes; }
 
+
+    public List<Demandes> getDemandes() {
+        return demandes;
+    }
+
+    public void setDemandes(List<Demandes> demandes) {
+        this.demandes = demandes;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -196,6 +228,7 @@ public class User implements Serializable {
                 ", signals=" + signals +
                 ", vols=" + vols +
                 ", impayes=" + impayes +
+                ", demandes=" + demandes +
                 '}';
     }
 }

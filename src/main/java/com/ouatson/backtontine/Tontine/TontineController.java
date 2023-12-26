@@ -1,6 +1,7 @@
 package com.ouatson.backtontine.Tontine;
 
 import com.ouatson.backtontine.Participants.Participant;
+import com.ouatson.backtontine.Participants.ParticipantService;
 import com.ouatson.backtontine.Utilisateurs.User;
 import com.ouatson.backtontine.Utilisateurs.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,12 @@ public class TontineController {
     @Autowired
     private TontineService tontineService;
     @Autowired
-    private UserService userService;
+    private ParticipantService participantService;
 
     @GetMapping("toutes/{id}")
     public ResponseEntity<List<Tontine>> toutesTontines(@PathVariable("id") Long id){
-        User user = userService.rechercheUserById(id);
-        List<Tontine> tontines = tontineService.toutesMesTontines(user);
+        Participant participant = participantService.rechercheParticipantById(id);
+        List<Tontine> tontines = tontineService.toutesMesTontines(participant);
         return new ResponseEntity<>(tontines, HttpStatus.OK);
     }
 

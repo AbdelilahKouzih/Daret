@@ -4,6 +4,7 @@ import com.ouatson.backtontine.Participants.Participant;
 import com.ouatson.backtontine.Participants.ParticipantService;
 import com.ouatson.backtontine.Participation.Participation;
 import com.ouatson.backtontine.Participation.ParticipationService;
+import com.ouatson.backtontine.Utilisateurs.UserService;
 import com.ouatson.backtontine.admin.Admin;
 import com.ouatson.backtontine.Utilisateurs.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,10 @@ public class TontineService {
     ParticipantService participantService;
 
     @Autowired
+    UserService userService;
+    @Autowired
     ParticipationService participationService;
-    public List<Tontine> toutesMesTontines(User user){
+    public List<Tontine> toutesMesTontines(Participant participant){
         List<Tontine> all = tontineRepository.findAll();
         List<Tontine> mine = new ArrayList<>();
 
@@ -36,8 +39,8 @@ public class TontineService {
             participations.forEach(participation -> {
                 List<Participant> participants = participation.getParticipants();
 
-                participants.forEach(participant -> {
-                    if (user.getEmail().equals(participant.getEmail())) {
+                participants.forEach(participantT -> {
+                    if (participantT.getEmail().equals(participant.getEmail())) {
                         mine.add(tontine);
                     }
                 });
@@ -136,35 +139,70 @@ public class TontineService {
  */@Transactional
 public void accepterDemande(Demandes demande) {
     Tontine tontine = rechercheTontine(demande.getTontine().getId());
-    if (tontine != null) {
-        List<User> utilisateurs = demande.getUtilisateurs();
 
-        // Vérifier si les utilisateurs ne sont pas déjà participants
-        for (User utilisateur : utilisateurs) {
-            boolean isUserParticipant = tontine.getParticipations().stream()
-                    .anyMatch(participation -> participation.getParticipants().stream()
-                            .anyMatch(participant -> utilisateur.getEmail().equals(participant.getEmail())));
 
-            if (!isUserParticipant) {
-                // Ajouter l'utilisateur comme participant à la tontine
-                Participant participant = new Participant();
-                participant.setEmail(utilisateur.getEmail());
-                participant.setTontine(tontine);
-                participantService.enregistrerPart(participant);
 
-                // Créer une participation pour l'utilisateur
-                Participation participation = new Participation();
-                participation.setTontine(tontine);
+    if (tontine == null) {
+        throw new TontineNotFoundException("Tontine d'identifiant " + demande.getTontine().getId() + " non trouvée !");
+    }
+
+    List<User> utilisateurs = demande.getUtilisateurs();
+    int currentNombrePart = tontine.getParticipations().size();
+    if (currentNombrePart >= tontine.getNombrePart()) {
+        throw new TontineNotFoundException("Le nombre total de participants atteint la limite autorisée.");
+    }
+
+    Participation participation = new Participation();
+    participation.setTontine(tontine);
+
+    int nombreDoublementMontant = tontine.getNombreDoublementMontant();
+
+    long  newMontant =( nombreDoublementMontant + currentNombrePart ) * tontine.getMontant();
+    long  montantTotal = tontine.getMontant() * tontine.getNombrePart();
+
+    if (utilisateurs.isEmpty()) {
+        User utilisateur = userService.rechercheUserByEmail(demande.getEmail());
+        if (utilisateur != null) {
+            Participant participant = createUserParticipant(utilisateur, tontine);
+
+            if (nombreDoublementMontant > 1 &&  newMontant < montantTotal) {
+                for (int i = 0; i < nombreDoublementMontant; i++) {
+                    participation.getParticipants().add(participant);
+                }
+            } else {
                 participation.getParticipants().add(participant);
-
-                // Enregistrer la participation
-                participationService.enregistrerParticipation(participation);
             }
         }
     } else {
-        throw new TontineNotFoundException("Tontine d'identifiant " + demande.getTontine().getId() + " non trouvée !");
+        for (User utilisateur : utilisateurs) {
+            Participant participant = createUserParticipant(utilisateur, tontine);
+            participation.getParticipants().add(participant);
+        }
     }
+
+    // Save the participation
+    participationService.enregistrerParticipation(participation);
+
+    // Add the participation to the tontine
+    tontine.getParticipations().add(participation);
 }
+
+    private Participant createUserParticipant(User utilisateur, Tontine tontine) {
+        Participant participant = new Participant();
+        participant.setEmail(utilisateur.getEmail());
+        participant.setNom(utilisateur.getNom());
+        participant.setPrenom(utilisateur.getPrenom());
+        participant.setDateNaiss(utilisateur.getDateNaiss());
+        participant.setAdresse(utilisateur.getAdresse());
+        participant.setNumTel(utilisateur.getNumTel());
+        participant.setProfession(utilisateur.getProfession());
+        participant.setSexe(utilisateur.getSexe());
+        participant.setTontine(tontine);
+
+        participantService.enregistrerPart(participant); // Save the participant
+
+        return participant;
+    }
 
 
     @Transactional
@@ -176,12 +214,14 @@ public void accepterDemande(Demandes demande) {
             tontine.getParticipations().forEach(participation ->
                     participation.getParticipants().removeIf(participant ->
                             demande.getEmail().equals(participant.getEmail())));
-
-            // Ajouter d'autres logiques nécessaires pour refuser l'utilisateur
         } else {
             throw new TontineNotFoundException("Tontine d'identifiant " + demande.getTontine().getId() + " non trouvée !");
         }
     }
 
+    private int determineNombreRoles(Double montant) {
+
+        return (int) (montant / 1000);
+    }
 
 }

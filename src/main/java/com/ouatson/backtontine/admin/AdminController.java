@@ -1,6 +1,7 @@
 package com.ouatson.backtontine.admin;
 
 //import com.ouatson.backtontine.SendEmail.EmailSenderService;
+import com.ouatson.backtontine.Demandes.Demandes;
 import com.ouatson.backtontine.Tontine.Tontine;
 import com.ouatson.backtontine.admin.Admin;
 import com.ouatson.backtontine.Utilisateurs.User;
@@ -165,20 +166,16 @@ public class AdminController {
     }
 
     @Transactional
-    @PostMapping("/accepter-utilisateur/{tontineId}/{userId}")
-    public ResponseEntity<?> accepterUtilisateur(
-            @PathVariable("tontineId") Long tontineId,
-            @PathVariable("userId") Long userId) {
-        adminService.accepterUtilisateur(tontineId, userId);
+    @PostMapping("/accepter-demande")
+    public ResponseEntity<?> accepterUtilisateur(@RequestBody Demandes demande) {
+        adminService.accepterDemande(demande);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
-    @PostMapping("/refuser-utilisateur/{tontineId}/{userId}")
-    public ResponseEntity<?> refuserUtilisateur(
-            @PathVariable("tontineId") Long tontineId,
-            @PathVariable("userId") Long userId) {
-        adminService.refuserUtilisateur(tontineId, userId);
+    @PostMapping("/refuser-demande")
+    public ResponseEntity<?> refuserUtilisateur(@RequestBody Demandes demande) {
+        adminService.refuserDemande(demande);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -44,6 +44,8 @@ public class Tontine implements Serializable {
     @Enumerated(EnumType.STRING)
     private TypeTirage typeTirage;
     private String description;
+
+    private int  nombreDoublementMontant ;
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
     private User proprietaire;
@@ -79,7 +81,8 @@ public class Tontine implements Serializable {
                    int periodicite,
                    TypeTirage typeTirage,
                    String description,
-                   User proprietaire) {
+                   User proprietaire,
+                   int nombreDoublementMontant) {
         this.id = id;
         this.code = code;
         this.nom = nom;
@@ -92,6 +95,15 @@ public class Tontine implements Serializable {
         this.typeTirage = typeTirage;
         this.description = description;
         this.proprietaire = proprietaire;
+        this.nombreDoublementMontant = nombreDoublementMontant;
+    }
+
+    public int getNombreDoublementMontant() {
+        return nombreDoublementMontant;
+    }
+
+    public void setNombreDoublementMontant(int nombreDoublementMontant) {
+        this.nombreDoublementMontant = nombreDoublementMontant;
     }
 
     public Long getId() {

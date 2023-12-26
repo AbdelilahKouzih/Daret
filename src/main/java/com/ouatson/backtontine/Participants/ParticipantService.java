@@ -1,6 +1,8 @@
 package com.ouatson.backtontine.Participants;
 
 import com.ouatson.backtontine.Tontine.Tontine;
+import com.ouatson.backtontine.Utilisateurs.User;
+import com.ouatson.backtontine.Utilisateurs.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +26,9 @@ public class ParticipantService {
 
     public void supprimerPart(Long id){
         participantRepository.deleteById(id);
+    }
+
+    public Participant rechercheParticipantById(Long id){
+        return participantRepository.findById(id).orElseThrow(() -> new ParticipantNotFoundException("Utilisateur d'identifiant "+id+" non trouve !"));
     }
 }
