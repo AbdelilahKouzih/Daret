@@ -7,6 +7,7 @@ import com.ouatson.backtontine.Participation.Participation;
 import com.ouatson.backtontine.Problemes.Impayes.Impayes;
 import com.ouatson.backtontine.Problemes.Signals.Signals;
 import com.ouatson.backtontine.Problemes.Vols.Vols;
+import com.ouatson.backtontine.Sexe;
 import com.ouatson.backtontine.Tontine.Tontine;
 
 import javax.persistence.*;
@@ -19,10 +20,6 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
 public class User implements Serializable {
-    public enum Sexe{
-        Masculin,Feminin
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ouatson.backtontine.Participation.Participation;
+import com.ouatson.backtontine.Sexe;
 import com.ouatson.backtontine.Tontine.Tontine;
 import com.ouatson.backtontine.Versement.Versement;
 
@@ -17,9 +18,6 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
 public class Participant implements Serializable {
-    public enum Sexe{
-        Masculin,Feminin
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
