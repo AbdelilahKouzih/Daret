@@ -3,7 +3,6 @@ package com.ouatson.backtontine.Utilisateurs;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ouatson.backtontine.Demandes.Demandes;
-import com.ouatson.backtontine.Participants.Participant;
 import com.ouatson.backtontine.Participation.Participation;
 import com.ouatson.backtontine.Problemes.Impayes.Impayes;
 import com.ouatson.backtontine.Problemes.Signals.Signals;
@@ -167,7 +166,7 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Participant.Sexe getSexe() {
+    public Sexe getSexe() {
         return sexe;
     }
 
