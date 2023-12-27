@@ -5,6 +5,7 @@ import com.ouatson.backtontine.Tontine.Tontine;
 
 import javax.persistence.Entity;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,10 @@ public class Participation {
 
     @ManyToOne
     private Tontine tontine;
+
+    public Participation() {
+        this.participants = new ArrayList<>();
+    }
 
     public Tontine getTontine() {
         return tontine;

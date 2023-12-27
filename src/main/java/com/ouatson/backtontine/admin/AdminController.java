@@ -167,10 +167,15 @@ public class AdminController {
 
     @Transactional
     @PostMapping("/accepter-demande")
-    public ResponseEntity<?> accepterUtilisateur(@RequestBody Demandes demande) {
-        adminService.accepterDemande(demande);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> accepterDemande(@RequestBody Demandes demande) {
+        try {
+            adminService.accepterDemande(demande);
+            return new ResponseEntity<>("Demande acceptée avec succès", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de l'acceptation de la demande : " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
+
 
     @Transactional
     @PostMapping("/refuser-demande")

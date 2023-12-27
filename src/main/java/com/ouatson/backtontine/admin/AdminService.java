@@ -128,7 +128,7 @@ public class AdminService {
 
 
     @Transactional
-    public void accepterDemande(Demandes demande) {
+    public void accepterDemande(Demandes demande) throws Exception {
         User user = rechercheUserByEmail(demande.getEmail());
 
         if (user != null) {

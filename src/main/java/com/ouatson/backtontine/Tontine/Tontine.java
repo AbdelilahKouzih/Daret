@@ -8,6 +8,7 @@ import com.ouatson.backtontine.Participants.Participant;
 import com.ouatson.backtontine.Participation.Participation;
 import com.ouatson.backtontine.Tontine.HistoriqueTirage.Tirages;
 import com.ouatson.backtontine.Utilisateurs.User;
+import com.ouatson.backtontine.admin.Admin;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -48,7 +49,7 @@ public class Tontine implements Serializable {
     private int  nombreDoublementMontant ;
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
-    private User proprietaire;
+    private Admin proprietaire;
    // @OneToMany(mappedBy = "tontine")
    // private Collection<Participant> participant;
     @OneToMany(mappedBy = "tontine")
@@ -81,7 +82,7 @@ public class Tontine implements Serializable {
                    int periodicite,
                    TypeTirage typeTirage,
                    String description,
-                   User proprietaire,
+                   Admin proprietaire,
                    int nombreDoublementMontant) {
         this.id = id;
         this.code = code;
@@ -194,11 +195,11 @@ public class Tontine implements Serializable {
         this.description = description;
     }
 
-    public User getProprietaire() {
+    public Admin getProprietaire() {
         return proprietaire;
     }
 
-    public void setProprietaire(User proprietaire) {
+    public void setProprietaire(Admin proprietaire) {
         this.proprietaire = proprietaire;
     }
 

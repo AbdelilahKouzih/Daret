@@ -49,19 +49,6 @@ public class User implements Serializable {
     private List<Demandes> demandes;
 
 
-
-    @ManyToMany(mappedBy = "utilisateurs")
-    private List<Participation> participations;
-
-
-    public List<Participation> getParticipations() {
-        return participations;
-    }
-
-    public void setParticipations(List<Participation> participations) {
-        this.participations = participations;
-    }
-
     public User() {
     }
 

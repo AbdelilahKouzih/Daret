@@ -137,10 +137,8 @@ public class TontineService {
 
 
  */@Transactional
-public void accepterDemande(Demandes demande) {
+public void accepterDemande(Demandes demande) throws Exception {
     Tontine tontine = rechercheTontine(demande.getTontine().getId());
-
-
 
     if (tontine == null) {
         throw new TontineNotFoundException("Tontine d'identifiant " + demande.getTontine().getId() + " non trouvée !");
@@ -157,15 +155,19 @@ public void accepterDemande(Demandes demande) {
 
     int nombreDoublementMontant = tontine.getNombreDoublementMontant();
 
-    long  newMontant =( nombreDoublementMontant + currentNombrePart ) * tontine.getMontant();
+    long  newMontant = (nombreDoublementMontant + currentNombrePart) * tontine.getMontant();
     long  montantTotal = tontine.getMontant() * tontine.getNombrePart();
 
     if (utilisateurs.isEmpty()) {
         User utilisateur = userService.rechercheUserByEmail(demande.getEmail());
         if (utilisateur != null) {
+            if (tontineContainsParticipant(tontine, utilisateur)) {
+                throw new Exception("L'utilisateur participe déjà à cette tontine.");
+            }
+
             Participant participant = createUserParticipant(utilisateur, tontine);
 
-            if (nombreDoublementMontant > 1 &&  newMontant < montantTotal) {
+            if (nombreDoublementMontant > 0 &&  newMontant < montantTotal) {
                 for (int i = 0; i < nombreDoublementMontant; i++) {
                     participation.getParticipants().add(participant);
                 }
@@ -174,6 +176,8 @@ public void accepterDemande(Demandes demande) {
             }
         }
     } else {
+
+
         for (User utilisateur : utilisateurs) {
             Participant participant = createUserParticipant(utilisateur, tontine);
             participation.getParticipants().add(participant);
@@ -186,6 +190,15 @@ public void accepterDemande(Demandes demande) {
     // Add the participation to the tontine
     tontine.getParticipations().add(participation);
 }
+
+    private boolean tontineContainsParticipant(Tontine tontine, User utilisateur) {
+        // Check if the user already participates in the tontine
+        return tontine.getParticipations()
+                .stream()
+                .anyMatch(participation -> participation.getParticipants()
+                        .stream()
+                        .anyMatch(p -> p.getEmail().equals(utilisateur.getEmail())));
+    }
 
     private Participant createUserParticipant(User utilisateur, Tontine tontine) {
         Participant participant = new Participant();

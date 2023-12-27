@@ -4,6 +4,7 @@ import com.ouatson.backtontine.Participants.Participant;
 import com.ouatson.backtontine.Participants.ParticipantService;
 import com.ouatson.backtontine.Utilisateurs.User;
 import com.ouatson.backtontine.Utilisateurs.UserService;
+import com.ouatson.backtontine.admin.Admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +41,9 @@ public class TontineController {
     }
 
     @PutMapping("/mettreProprio/{id}")
-    public ResponseEntity<Tontine> mettreProprio(@RequestBody User user, @PathVariable("id") Long id){
+    public ResponseEntity<Tontine> mettreProprio(@RequestBody Admin admin, @PathVariable("id") Long id){
         Tontine tontine = tontineService.rechercheTontine(id);
-        tontine.setProprietaire(user);
+        tontine.setProprietaire(admin);
         Tontine modifTontine = tontineService.modifierTontine(tontine);
         return new ResponseEntity<>(modifTontine, HttpStatus.OK);
     }

@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/utilisateurs")
 public class UserController {
     BCryptPasswordEncoder encode = new BCryptPasswordEncoder(12);
 
